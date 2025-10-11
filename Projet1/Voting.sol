@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.28; //Exi2
+pragma solidity ^0.8.28; //Exi2
 
 
 /** Process : 
@@ -42,6 +42,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 
 contract Voting is Ownable { //Exi1
 
+/* ------------- Start of the variable declaration -----------------*/
 struct Voter { //Exi4
     bool isRegistered;
     bool hasVoted;
@@ -69,13 +70,24 @@ mapping (address => Voter) whitelist;
 Proposal[] proposallist;
 Proposal winner;
 WorkflowStatus public currentState = WorkflowStatus.RegisteringVoters;
+/* ------------- End of the variable declaration -----------------*/
 
 constructor () Ownable(msg.sender){} //Exi3
 
+/* --------------- Set of the modifier --------------*/
 modifier isVoter(){
     require (whitelist[msg.sender].isRegistered == true, "You are not allowed to do this, contact the Administrator");
     _;
 }
+
+/* -----------------------------List of function -------------------------------
+    register : to register voters by the owner only ad before the start of the proposal and voting session
+    nextWorkflowPhase : to go to the next phase of the workflow, only by the owner
+    registerProposal : for the voters to register there proposals
+    vote : for the voters to vote for their best proposal during the voting session
+    calculWinner : to compute the result of the vote, done by the owner at the end of the voting session
+    getWinner : to show the winning prpoposal to everyone ---------------------*/
+
 //Proc1
 function register (address _address) external onlyOwner{
     require (whitelist[_address].isRegistered == false, "Address already registered");
@@ -109,7 +121,7 @@ function registerProposal (string memory _description) external isVoter {
 //Proc6
 function vote (uint _proposalId) external isVoter {
     require (currentState == WorkflowStatus.VotingSessionStarted,"Wait for the start of the voting session");
-    require (whitelist[msg.sender].hasVoted==false, "You has already voted");
+    require (whitelist[msg.sender].hasVoted==false, "You have already voted");
     proposallist[_proposalId].voteCount += 1;
     whitelist[msg.sender].hasVoted = true;
     whitelist[msg.sender].votedProposalId = _proposalId;
@@ -117,9 +129,9 @@ function vote (uint _proposalId) external isVoter {
 }
 //Proc8
 function calculWinner () external onlyOwner {
-    require (currentState == WorkflowStatus.VotingSessionEnded, "close the voting session first");
+    require (currentState == WorkflowStatus.VotingSessionEnded, "Close the voting session first");
     uint index;
-    bool wehaveaWinner = 1;
+    bool wehaveaWinner = true;
     for (uint i=1;i<proposallist.length;i++){
         if (proposallist[i].voteCount > proposallist[index].voteCount){
             wehaveaWinner = true;
