@@ -81,12 +81,12 @@ modifier isVoter(){
 }
 
 /* -----------------------------List of function -------------------------------
-    register : to register voters by the owner only ad before the start of the proposal and voting session
+    register : to register voters only by the owner and before the start of the proposal and voting session
     nextWorkflowPhase : to go to the next phase of the workflow, only by the owner
-    registerProposal : for the voters to register there proposals
-    vote : for the voters to vote for their best proposal during the voting session
+    registerProposal : for the voters to register their proposals
+    vote : for the voters to vote for the best proposal during the voting session
     calculWinner : to compute the result of the vote, done by the owner at the end of the voting session
-    getWinner : to show the winning prpoposal to everyone ---------------------*/
+    getWinner : to show the winning proposal to everyone ---------------------*/
 
 //Proc1
 function register (address _address) external onlyOwner{
